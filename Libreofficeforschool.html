@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LibreOffice Writer Mockup</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #e6e6e6;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Top Menu Bar */
+        .menu-bar {
+            background-color: #d1d1d1;
+            border-bottom: 1px solid #a3a3a3;
+            padding: 4px;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .menu-bar > span {
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+        .menu-bar > span:hover {
+            background-color: #c0c0c0;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            background-color: #e6e6e6;
+            padding: 4px;
+            border-bottom: 1px solid #a3a3a3;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 2px;
+            padding: 2px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .toolbar-group:hover {
+            border: 1px solid #b0b0b0;
+        }
+
+        .toolbar button {
+            background-color: transparent;
+            border: 1px solid transparent;
+            padding: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #444;
+        }
+
+        .toolbar button:hover {
+            background-color: #d1d1d1;
+            border-color: #a3a3a3;
+            border-radius: 4px;
+        }
+
+        /* Document Area */
+        .document-area {
+            flex-grow: 1;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .document-page {
+            background-color: white;
+            border: 1px solid #a3a3a3;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            width: 21cm;
+            height: 29.7cm; /* A4 size */
+            margin: 0 auto;
+            padding: 2cm;
+        }
+
+        /* File input hidden from view */
+        #file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-bar">
+        <span>File</span>
+        <span>Edit</span>
+        <span>View</span>
+        <span>Insert</span>
+        <span>Format</span>
+        <span>Styles</span>
+        <span>Table</span>
+        <span>Tools</span>
+        <span>Window</span>
+        <span>Help</span>
+    </div>
+
+    <div class="toolbar">
+        <div class="toolbar-group">
+            <button title="Open (Ctrl+O)" onclick="openHtmlFile()">📁</button>
+            <button title="Save (Ctrl+S)">💾</button>
+        </div>
+        <div class="toolbar-group">
+            <button title="Undo (Ctrl+Z)">↩️</button>
+            <button title="Redo (Ctrl+Y)">↪️</button>
+        </div>
+        <div class="toolbar-group">
+            <button title="Bold (Ctrl+B)">**B**</button>
+            <button title="Italic (Ctrl+I)">_I_</button>
+            <button title="Underline (Ctrl+U)"><u>U</u></button>
+        </div>
+    </div>
+
+    <div class="document-area">
+        <div class="document-page">
+            <p>Use the "Open" button in the toolbar to import and render an HTML file inside this document area.</p>
+            <iframe id="html-content" style="width:100%; height:100%; border:none;"></iframe>
+        </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="file-input" accept=".html,.htm" />
+
+    <script>
+        function openHtmlFile() {
+            document.getElementById('file-input').click();
+        }
+
+        document.getElementById('file-input').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const htmlContent = e.target.result;
+                const iframe = document.getElementById('html-content');
+                
+                // Clear any existing content
+                iframe.src = 'about:blank';
+                
+                // Inject the new HTML content
+                iframe.onload = function() {
+                    iframe.contentDocument.open();
+                    iframe.contentDocument.write(htmlContent);
+                    iframe.contentDocument.close();
+                };
+            };
+            reader.readAsText(file);
+        });
+    </script>
+
+</body>
+</html>
